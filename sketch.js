@@ -3,6 +3,7 @@ var theta = 0;
 var textEarth, textClouds, textStars;
 var dataTexture;
 var csvFile;
+var csvWorldAirTempreature;
 
 var radius = 350;
 var zoomZ = 0;
@@ -28,6 +29,7 @@ function preload() {
 	dataTexture = createGraphics(2048, 1024);
 	dataTexture.background(100, 200, 220, 30);
 
+	csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
 }
 
 function setup() {
@@ -40,6 +42,16 @@ function setup() {
 	//gl.enable(gl.BLEND);
 	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);	
 
+	var capas = new Capas();
+	capas.cargarCapa(1, 'World Air Temperature',csvWorldAirTempreature);
+	var capa = capas.getCapa(1);
+	var fecha = capa.getFecha(null);
+	var datos = fecha.getDatos();
+	console.log(datos[0]);
+	console.log(datos[1]);
+	console.log(datos[2]);
+	console.log(datos[3]);
+	console.log(datos[4]);
 	parseCSVData();
 }
 
