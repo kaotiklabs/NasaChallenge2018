@@ -1,6 +1,6 @@
 
 var textEarth, textClouds, textStars;
-var dataTexture;
+var dataTextures = [];
 var csvFile;
 var gui;
 var csvWorldAirTempreature;
@@ -22,6 +22,8 @@ var Heatmap = true;
 var Background = true;
 var Markers = false;
 
+var vid;
+
 function preload() {
 
 	textEarth = loadImage("assets/earth.jpg");
@@ -40,6 +42,11 @@ function setup() {
 
 	gui = createGui('NASA Apps Challenge 2018');
 	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background');
+
+	vid = createVideo(["assets/street.avi"]);
+	vid.elt.muted = true;
+	vid.loop();
+	//vid.hide();
 
 	//enable wegl alpha??
 	// gl = this._renderer.GL;
@@ -60,13 +67,13 @@ function setup() {
 	console.log(datos[3]);
 	console.log(datos[4]);
 	parseCSVData();
-	dataTexture = createGraphics(1536, 768);
+
 	//dataTexture.fill(0, 0, 0, 0);
 	//dataTexture.background(0, 220, 0, 0);
 
 	//parseCSVData();
 
-	parseDataTexture();
+	parseDataTexture(0);
 }
 
 function parseCSVData() {
@@ -115,7 +122,9 @@ function parseCSVData() {
 	}
 }
 
-function parseDataTexture(){
+function parseDataTexture(textureId){
+
+	dataTextures.push(createGraphics(1536, 768));
 
 	for (var i = 0; i < csvFile.length; i++) { 
 
@@ -125,16 +134,16 @@ function parseDataTexture(){
 		var lon = data[2];
 		var mag = data[4];
 		
-		var textureX = map(lon, -180, 180, 0, dataTexture.width, true);
-		var textureY = map(lat, -90, 90, dataTexture.height, 0, true);
+		var textureX = map(lon, -180, 180, 0, dataTextures[textureId].width, true);
+		var textureY = map(lat, -90, 90, dataTextures[textureId].height, 0, true);
 		var magnitude = map(mag, 0, 7, 0, 255, true);
 
 		//paint data texture		
-		dataTexture.colorMode(HSB, 255, 100, 100, 255);
+		dataTextures[textureId].colorMode(HSB, 255, 100, 100, 255);
 
-		dataTexture.noStroke();
-		dataTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		dataTexture.ellipse(textureX, textureY, int(mag*2));
+		dataTextures[textureId].noStroke();
+		dataTextures[textureId].fill(magnitude, 70, 70, magnitude/1.3);
+		dataTextures[textureId].ellipse(textureX, textureY, int(mag*2));
 
 		//colorMode(RGB);  
 	}
@@ -196,7 +205,7 @@ function draw() {
 	sphere(radius, 48, 32);
 	
 	if(Clouds){
-		//clouds ellipse		
+		//clouds ellipse			
 		texture(textClouds);
 		sphere(radius + 5, 48, 32);	
 	}
@@ -205,7 +214,7 @@ function draw() {
 	if(Heatmap){
 		//data ellipse
 		//dataTexture.fill(0,0,0,0);
-		texture(dataTexture);
+		texture(dataTextures[0]);
 		sphere(radius + 10);
 	}
 
