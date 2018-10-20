@@ -20,13 +20,14 @@ function Capas()
                 fechaPointer = 5;
                 latitudPointer = 2;
                 longitudPointer = 3;
-                valorPointer = 9;
+                valorPointer = 11;
                 alturaPointer = 4;
             }
             else
             {
                 if(data.length>=alturaPointer)
                 {
+                    //capa.addDato(data[fechaPointer].substring(0,10), data[latitudPointer], data[longitudPointer], data[valorPointer].split(/"/)[1], data[alturaPointer]);
                     capa.addDato(data[fechaPointer].substring(0,10), data[latitudPointer], data[longitudPointer], data[valorPointer], data[alturaPointer]);
                 }
             }

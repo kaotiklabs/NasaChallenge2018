@@ -12,7 +12,7 @@ var speedFactor = 5;
 var zoomZ = 0;
 
 var timer = 0;
-var timeStep = 500; //ms x frame
+var timeStep = 100; //ms x frame
 var numFrame = 0;
 
 var eqdata;
@@ -39,7 +39,7 @@ function preload() {
 	csvFile = loadStrings("data/all.csv");
 
 	//csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
-	csvWorldAirTempreature = loadStrings("data/surfaceTemperature.csv");
+	csvWorldAirTempreature = loadStrings("data/airTemperatureMonthly.csv");
 }
 
 function windowResized() {
@@ -68,7 +68,7 @@ function setup() {
 	var capa = capas.getCapa(1);
 	//var fecha = capa.getFecha(null);
 	//var datos = fecha.getDatos();
-	var rango = capa.getRango("2017-01-01","2019-01-01");
+	var rango = capa.getRango("1990-01-01","2019-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
 	//dataTexture.fill(0, 0, 0, 0);
@@ -110,15 +110,15 @@ function DateToTexture(arrayDatos){
 		
 		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
 		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
-		var magnitude = map(mag, -100, 100, 0, 255, true);
+		var magnitude = map(mag, -20, 40, 240, 0, true);
 
 
 		//paint data texture		
-		bufTexture.colorMode(HSB, 255, 100, 100, 255);
+		bufTexture.colorMode(HSB, 360, 100, 100, 255);
 
 		bufTexture.noStroke();
-		bufTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		bufTexture.ellipse(textureX, textureY, magnitude/4);
+		bufTexture.fill(magnitude, 70, 70, 10);
+		bufTexture.ellipse(textureX, textureY, 80);
 
 		//colorMode(RGB);  
 	}
