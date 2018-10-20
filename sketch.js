@@ -54,11 +54,6 @@ function setup() {
 	var capa = capas.getCapa(1);
 	var fecha = capa.getFecha(null);
 	var datos = fecha.getDatos();
-	console.log(datos[0]);
-	console.log(datos[1]);
-	console.log(datos[2]);
-	console.log(datos[3]);
-	console.log(datos[4]);
 	var rango = capa.getRango("1995-01-01","1997-01-01");
 	parseCSVData();
 	dataTexture = createGraphics(1536, 768);
@@ -70,6 +65,7 @@ function setup() {
 	parseDataTexture();
 }
 
+/*
 function parseCSVData() {
 
 	//Make a P5 table to store data
@@ -84,7 +80,7 @@ function parseCSVData() {
 
 	//Extract data from CSV, calculate and store in the table
 	for (var i = 0; i < csvFile.length; i++) { 
-		var data = [i].split(/,/);
+		var data = csvFile[i].split(/,/);
 		//console.log(data);
 		var lat = data[1];
 		var lon = data[2];
@@ -115,7 +111,7 @@ function parseCSVData() {
 		
 	}
 }
-
+*/
 function parseDatesTextures(fechas)
 {
 	var textures = [];
