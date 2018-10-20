@@ -1,0 +1,5 @@
+time,latitude,longitude,depth,mag,magType,nst,gap,dmin,rms,net,id,updated,place,type,horizontalError,depthError,magError,magNst,status,locationSource,magSource
+2017-02-10T17:07:24.735Z,38.513544,-0.22434,7.1,1.8,ml,,,,0.46,ak,ak15253224,2017-02-10T17:10:34.745Z,"5km WNW of Sutton-Alpine, Alaska",earthquake,,0.2,,,automatic,ak,ak
+2017-02-10T17:07:24.735Z,41.382894,2.177432,7.1,1.8,ml,,,,0.46,ak,ak15253224,2017-02-10T17:10:34.745Z,"5km WNW of Sutton-Alpine, Alaska",earthquake,,0.2,,,automatic,ak,ak
+2017-02-10T17:07:24.735Z,51.507322,-0.127647,16.1,1.8,ml,,,,0.46,ak,ak15253224,2017-02-10T17:10:34.745Z,"5km WNW of Sutton-Alpine, Alaska",earthquake,,0.2,,,automatic,ak,ak
+2017-02-10T17:04:36.020Z,-33.854816,155.216454,0,1.7,ml,,,,0.48,ak,ak15253222,2017-02-10T17:10:34.535Z,"3km SSW of Circle Hot Springs Station, Alaska",earthquake,,0.4,,,automatic,ak,ak
