@@ -3,6 +3,7 @@ var textEarth, textClouds, textStars;
 var dataTexture;
 var csvFile;
 var gui;
+var csvWorldAirTempreature;
 
 var radius = 200;
 var theta = 0;
@@ -31,6 +32,7 @@ function preload() {
 
 	csvFile = loadStrings("data/all.csv");
 
+	csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
 }
 
 function setup() {
@@ -47,6 +49,17 @@ function setup() {
 	//textCanvas = createGraphics(windowWidth,windowHeight);	
 	textFont(myFont);
 
+	var capas = new Capas();
+	capas.cargarCapa(1, 'World Air Temperature',csvWorldAirTempreature);
+	var capa = capas.getCapa(1);
+	var fecha = capa.getFecha(null);
+	var datos = fecha.getDatos();
+	console.log(datos[0]);
+	console.log(datos[1]);
+	console.log(datos[2]);
+	console.log(datos[3]);
+	console.log(datos[4]);
+	parseCSVData();
 	dataTexture = createGraphics(1536, 768);
 	//dataTexture.fill(0, 0, 0, 0);
 	//dataTexture.background(0, 220, 0, 0);
