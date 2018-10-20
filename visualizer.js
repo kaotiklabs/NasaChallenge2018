@@ -25,6 +25,10 @@ function preload() {
 	dataTexture = createGraphics(2048, 1024);
 	dataTexture.background(100, 200, 220, 30);
 
+	var loader = new LoaderCSV("resources/worldAirTemperature.csv");
+	loader.openFile();
+	console.log("caca2");
+
 }
 
 function setup() {
@@ -106,9 +110,11 @@ function draw() {
 	background(10);
 	
 	///fps counter
+	/*
 	fill(255);
 	text("HHHHHHHH", -100, -100);
 	text("HHHHHHHH", 100, 0);
+*/
 
 	//limitador de zoom
 	if(zoomZ<minZoomZ)
