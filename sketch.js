@@ -52,6 +52,7 @@ function setup() {
 	console.log(datos[2]);
 	console.log(datos[3]);
 	console.log(datos[4]);
+	var rango = capa.getRango("1995-01-01","1997-01-01");
 	parseCSVData();
 	dataTexture = createGraphics(1536, 768);
 	//dataTexture.fill(0, 0, 0, 0);
