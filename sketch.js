@@ -8,6 +8,7 @@ var csvWorldAirTempreature;
 
 var radius = 200;
 var theta = 0;
+var speedFactor = 5;
 var zoomZ = 0;
 
 var timer = 0;
@@ -40,11 +41,16 @@ function preload() {
 	csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
 }
 
+function windowResized() {
+	resizeCanvas(windowWidth, windowHeight);
+  }
+
+  
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
 
 	gui = createGui('NASA Apps Challenge 2018');
-	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background', 'timeStep');
+	gui.addGlobals('speedFactor', 'Clouds', 'Heatmap', 'Markers', 'Background', 'timeStep');
 
 	timer = millis();
 
@@ -61,7 +67,7 @@ function setup() {
 	var capa = capas.getCapa(1);
 	var fecha = capa.getFecha(null);
 	var datos = fecha.getDatos();
-	var rango = capa.getRango("1995-01-01","1997-01-01");
+	var rango = capa.getRango("1995-01-01","2019-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
 	//dataTexture.fill(0, 0, 0, 0);
@@ -87,7 +93,8 @@ function GenerateTextureArray(fechas)
 
 function DateToTexture(arrayDatos){
 
-	var bufTexture = createGraphics(1536, 768);
+	//var bufTexture = createGraphics(1536, 768);
+	var bufTexture = createGraphics(1024, 512);
 
 	for (var i = 0; i < arrayDatos.length; i++) { 
 		
@@ -98,18 +105,19 @@ function DateToTexture(arrayDatos){
 		var lon = arrayDatos[i].longitud;
 		var mag = arrayDatos[i].valor;
 
-		print("lat: "+lat+" lon: "+lon+" val: "+mag);
+		//print("lat: "+lat+" lon: "+lon+" val: "+mag);
 		
 		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
 		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
 		var magnitude = map(mag, 0, 50, 0, 255, true);
+
 
 		//paint data texture		
 		bufTexture.colorMode(HSB, 255, 100, 100, 255);
 
 		bufTexture.noStroke();
 		bufTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		bufTexture.ellipse(textureX, textureY, int(mag*2));
+		bufTexture.ellipse(textureX, textureY, magnitude/4);
 
 		//colorMode(RGB);  
 	}
@@ -208,7 +216,7 @@ function draw() {
 	pop();
 
 	//earth rotation increment
-	theta += 0.05;
+	theta += speedFactor/100;
 
 	
 	//var gl = document.getElementById('defaultCanvas0').getContext('webgl');

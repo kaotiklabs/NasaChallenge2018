@@ -109,7 +109,7 @@ function Capa(idCapa, nombreCapa)
 
         for(var ran in rango)
         {
-            console.log(rango[ran]);
+            //console.log(rango[ran]);
             datos.push(this.fechas[rango[ran]]);
         }
 
