@@ -96,16 +96,24 @@ function Capa(idCapa, nombreCapa)
 
     this.getRango = function(fechaInicial, fechaFinal)
     {
+        var datos = [];
         var rango = [];
         for(var x in this.fechas)
         {
             if(x >= fechaInicial && x <= fechaFinal)
             {
-                console.log(x);
-                rango.push(this.fechas[x]);
+                rango.push(x);
             }
         }
-        return rango;
+        rango.sort();
+
+        for(var ran in rango)
+        {
+            console.log(rango[ran]);
+            datos.push(this.fechas[rango[ran]]);
+        }
+
+        return datos;
     }
 }
 
