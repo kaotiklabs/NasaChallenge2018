@@ -48,6 +48,8 @@ function windowResized() {
 
   
 function setup() {
+	frameRate(30);
+
 	createCanvas(windowWidth, windowHeight, WEBGL);
 
 	gui = createGui('NASA Apps Challenge 2018');
@@ -68,7 +70,7 @@ function setup() {
 	var capa = capas.getCapa(1);
 	//var fecha = capa.getFecha(null);
 	//var datos = fecha.getDatos();
-	var rango = capa.getRango("2017-01-01","2019-01-01");
+	var rango = capa.getRango("2017-01-01","2018-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
 	//dataTexture.fill(0, 0, 0, 0);
@@ -107,18 +109,17 @@ function DateToTexture(arrayDatos){
 		var mag = float(arrayDatos[i].valor);
 
 		//print("lat: "+lat+" lon: "+lon+" val: "+mag);
-		
-		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
-		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
-		var magnitude = map(mag, -100, 100, 0, 255, true);
-
 
 		//paint data texture		
 		bufTexture.colorMode(HSB, 255, 100, 100, 255);
 
+		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
+		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
+		var magnitude = map(mag, -50, 50, 0, 255, true);
+
 		bufTexture.noStroke();
-		bufTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		bufTexture.ellipse(textureX, textureY, magnitude/4);
+		bufTexture.fill(magnitude, 70, 70, 150);
+		bufTexture.ellipse(textureX, textureY, 40);
 
 		//colorMode(RGB);  
 	}
