@@ -10,6 +10,10 @@ var radius = 200;
 var theta = 0;
 var zoomZ = 0;
 
+var timer = 0;
+var timeStep = 500; //ms x frame
+var numFrame = 0;
+
 var eqdata;
 var rows = [];
 var rx = 0;
@@ -40,7 +44,9 @@ function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
 
 	gui = createGui('NASA Apps Challenge 2018');
-	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background');
+	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background', 'timeStep');
+
+	timer = millis();
 
 	//enable wegl alpha??
 	// gl = this._renderer.GL;
@@ -122,6 +128,15 @@ function mouseWheel(event) {
 
 function draw() {
 
+	if((millis() - timer) > timeStep){
+		timer = millis();
+		numFrame++;
+
+		if(numFrame >= dataTextures.length){
+			numFrame = 0;
+		}
+	}
+
 	background(10);
 
 	//atmosphere
@@ -175,8 +190,8 @@ function draw() {
 	if(Heatmap){
 		//data ellipse
 		//dataTexture.fill(0,0,0,0);
-		texture(dataTextures[10]);
-		sphere(radius + 10);
+		texture(dataTextures[numFrame]);
+		sphere(radius+4);
 	}
 
 	if(Background){
