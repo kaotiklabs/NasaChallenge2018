@@ -55,11 +55,6 @@ function setup() {
 	var capa = capas.getCapa(1);
 	var fecha = capa.getFecha(null);
 	var datos = fecha.getDatos();
-	console.log(datos[0]);
-	console.log(datos[1]);
-	console.log(datos[2]);
-	console.log(datos[3]);
-	console.log(datos[4]);
 	var rango = capa.getRango("1995-01-01","1997-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
