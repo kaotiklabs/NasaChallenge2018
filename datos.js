@@ -135,9 +135,9 @@ function FechaGrupo(fecha)
 }
 
 //Dato: detalle modular
-function Dato(altitud, longitud, valor, altura)
+function Dato(latitud, longitud, valor, altura)
 {
-    this.altitud = altitud;
+    this.latitud = latitud;
     this.longitud = longitud;
     this.valor = valor;
     this.altura = altura;
