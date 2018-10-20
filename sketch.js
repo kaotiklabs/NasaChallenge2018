@@ -1,10 +1,11 @@
-var theta = 0;
 
 var textEarth, textClouds, textStars;
 var dataTexture;
 var csvFile;
 
-var radius = 350;
+
+var radius = 250;
+var theta = 0;
 var zoomZ = 0;
 
 var eqdata;
@@ -20,27 +21,32 @@ function preload() {
 	textEarth = loadImage("assets/earth.jpg");
 	textClouds = loadImage("assets/clouds-alpha.png");
 	textStars = loadImage("assets/milky.png");
-
-	csvFile = loadStrings("data/test.csv");
-
-	myFont = loadFont('assets/AvenirNextLTPro-Demi.otf');
 	
-	dataTexture = createGraphics(2048, 1024);
-	dataTexture.background(100, 200, 220, 30);
+	myFont = loadFont('assets/AvenirNextLTPro-Demi.otf');
+
+	csvFile = loadStrings("data/all.csv");
 
 }
 
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
+
+
+	//enable wegl alpha??
+	// gl = this._renderer.GL;
+	// gl.enable(gl.BLEND);
+	// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);	
+
 	//textCanvas = createGraphics(windowWidth,windowHeight);	
 	textFont(myFont);
-	
-	//enable wegl alpha??
-	//gl = this._renderer.GL;
-	//gl.enable(gl.BLEND);
-	//gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);	
 
-	parseCSVData();
+	dataTexture = createGraphics(1536, 768);
+	//dataTexture.fill(0, 0, 0, 0);
+	//dataTexture.background(0, 220, 0, 0);
+
+	//parseCSVData();
+
+	parseDataTexture();
 }
 
 function parseCSVData() {
@@ -86,16 +92,35 @@ function parseCSVData() {
 		rows[i].set('angleb', angleb);
 		//print("load line: "+i);
 		
-		//paint data texture
-		dataTexture.noStroke();
-		dataTexture.fill(200, 0, 0);
-		
-		var textureX = map(lon, -180, 180, 0, 2048, true);
-		var textureY = map(lat, -90, 90, 1024, 0, true);
-		dataTexture.ellipse(textureX, textureY, 20);
-		
 	}
 }
+
+function parseDataTexture(){
+
+	for (var i = 0; i < csvFile.length; i++) { 
+
+		var data = csvFile[i].split(/,/);
+		//console.log(data);
+		var lat = data[1];
+		var lon = data[2];
+		var mag = data[4];
+		
+		var textureX = map(lon, -180, 180, 0, dataTexture.width, true);
+		var textureY = map(lat, -90, 90, dataTexture.height, 0, true);
+		var magnitude = map(mag, 0, 7, 0, 255, true);
+
+		//paint data texture		
+		dataTexture.colorMode(HSB, 255, 100, 100, 255);
+
+		dataTexture.noStroke();
+		dataTexture.fill(magnitude, 70, 70, magnitude/1.3);
+		dataTexture.ellipse(textureX, textureY, int(mag*2));
+
+		//colorMode(RGB);  
+	}
+
+}
+
 
 function mouseWheel(event) {
 	//print(event.delta);
@@ -110,12 +135,10 @@ function draw() {
 	background(10);
 
 	//atmosphere
-	fill(150, 150, 250, 250);
-	ellipse(0, 0, radius * 2 + 60, radius * 2 + 60, 48);
-	fill(50, 50, 200, 100);
-	ellipse(0, 0, radius * 2 + 80, radius * 2 + 80, 48);
-	fill(25, 25, 200, 25);
-	ellipse(0, 0, radius * 2 + 100, radius * 2 + 100, 48);
+	// fill(50, 50, 200, 100);
+	// ellipse(0, 0, radius * 2 + 70, radius * 2 + 70, 48);
+	// fill(25, 25, 200, 25);
+	// ellipse(0, 0, radius * 2 + 110, radius * 2 + 110, 48);
 
 
 	translate(0, 0, zoomZ);
@@ -123,19 +146,19 @@ function draw() {
 	//Rotate the globe if the mouse is pressed
 	if (mouseIsPressed) {
 		rx += (mouseX - pmouseX) / 100;
-		//ry += (mouseY - pmouseY) / -100;
+		//ry += (mouseY - pmouseY) / -400;
 	}
-	let dirX = mouseX - width / 2;
-	let dirY = mouseY - height / 2;
+	let dirX = mouseX - windowWidth / 2;
+	let dirY = mouseY - windowHeight / 2;
 
 
 	//mouse pointer
 	//	fill(255);
 	// ellipse(mouseX - width/2, mouseY - height/2, 20, 20);
 
-	//ambientLight(150);
-	//directionalLight(255, 211, 200, 0.25, 0.25, 0);
-	//pointLight(255, 255, 255, mouseX, mouseY, 250);
+	// ambientLight(150);
+	// directionalLight(255, 211, 200, 0.25, 0.25, 0);
+	// pointLight(255, 255, 255, mouseX, mouseY, 250);
 
 
 
@@ -146,26 +169,27 @@ function draw() {
 	rotateX(ry);
 
 	//!no se si fa algo?
-	//ambientMaterial(250);
+	ambientMaterial(250);
 
 	//earth ellipse
 	texture(textEarth);
 	sphere(radius, 48, 32);
 		
-	//clouds ellipse
-	texture(textClouds);
-	sphere(radius + 10, 48, 32);
+	//clouds ellipse		
+	//texture(textClouds);
+	//sphere(radius + 10, 48, 32);
 	
 	//data ellipse
+	//dataTexture.fill(0,0,0,0);
 	texture(dataTexture);
-	sphere(radius + 11, 48, 32);
+	sphere(radius + 10);
 
-	//data ellipse
-	texture(textStars);
-	sphere(radius*5, 48, 32);
+	//starfield ellipse
+	//textStars.fill(0, 0, 0, 0);
+	//texture(textStars);	
+	//sphere(radius*5, 48, 32);
 	
-	draw3DMarkers();
-
+	//draw3DMarkers();
 
 	pop();
 
@@ -188,8 +212,9 @@ function draw() {
 
 	
 	//webgl text mode
-   textSize(36);
-   text(int(frameRate())+" fps", -width/2, 0);
+	fill(255);
+   	textSize(36);
+   	text(int(frameRate())+" fps", -windowWidth/2.5, 0);
 }
 
 
@@ -217,8 +242,8 @@ function draw3DMarkers() {
 		translate(x, y, z);
 		rotate(angle_b, [r_axis.x, r_axis.y, r_axis.z]);
 
-		//fill(200,0,255);
-		normalMaterial();
+		fill(200,0,255);
+		//normalMaterial();
 		box(boxheight, 1, 1);
 
 		pop();
