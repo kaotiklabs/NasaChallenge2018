@@ -159,7 +159,7 @@ function draw() {
 	//Rotate the globe if the mouse is pressed
 	if (mouseIsPressed) {
 		rx += (mouseX - pmouseX) / 100;
-		//ry += (mouseY - pmouseY) / -400;
+		ry += (mouseY - pmouseY) / -400;
 	}
 	let dirX = mouseX - windowWidth / 2;
 	let dirY = mouseY - windowHeight / 2;
@@ -191,7 +191,7 @@ function draw() {
 	if(Clouds){
 		//clouds ellipse			
 		texture(textClouds);
-		sphere(radius + 5, 48, 32);	
+		sphere(radius + 4, 48, 32);	
 	}
 	
 
@@ -199,7 +199,7 @@ function draw() {
 		//data ellipse
 		//dataTexture.fill(0,0,0,0);
 		texture(dataTextures[numFrame]);
-		sphere(radius+4);
+		sphere(radius+7);
 	}
 
 	if(Background){
@@ -236,7 +236,7 @@ function draw() {
 	//webgl text mode
 	fill(255);
    	textSize(36);
-   	text(int(frameRate())+" fps", -windowWidth/2.5, 0);
+   	text(int(frameRate())+" fps", -windowWidth/2.2, 0);
 }
 
 
