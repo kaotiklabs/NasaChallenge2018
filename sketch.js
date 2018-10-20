@@ -66,6 +66,7 @@ function setup() {
 	console.log(datos[2]);
 	console.log(datos[3]);
 	console.log(datos[4]);
+	var rango = capa.getRango("1995-01-01","1997-01-01");
 	parseCSVData();
 
 	//dataTexture.fill(0, 0, 0, 0);
@@ -90,7 +91,7 @@ function parseCSVData() {
 
 	//Extract data from CSV, calculate and store in the table
 	for (var i = 0; i < csvFile.length; i++) { 
-		var data = csvFile[i].split(/,/);
+		var data = [i].split(/,/);
 		//console.log(data);
 		var lat = data[1];
 		var lon = data[2];
@@ -122,13 +123,28 @@ function parseCSVData() {
 	}
 }
 
+function parseDatesTextures(fechas)
+{
+	var textures = [];
+	var texture;
+
+	for(var fecha in fechas)
+	{
+		texture = parseDataTexture(fecha.getDatos());
+		textures.push(texture);
+	}
+
+	return textures;
+}
+
+
 function parseDataTexture(textureId){
 
 	dataTextures.push(createGraphics(1536, 768));
 
 	for (var i = 0; i < csvFile.length; i++) { 
 
-		var data = csvFile[i].split(/,/);
+		var data = [i].split(/,/);
 		//console.log(data);
 		var lat = data[1];
 		var lon = data[2];

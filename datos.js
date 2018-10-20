@@ -27,7 +27,7 @@ function Capas()
             {
                 if(data.length>=alturaPointer)
                 {
-                    capa.addDato(data[fechaPointer], data[altitudPointer], data[longitudPointer], data[valorPointer], data[alturaPointer]);
+                    capa.addDato(data[fechaPointer].substring(0,10), data[altitudPointer], data[longitudPointer], data[valorPointer], data[alturaPointer]);
                 }
             }
         }
@@ -82,7 +82,7 @@ function Capa(idCapa, nombreCapa)
     {
         if(fecha == null)
         {
-            return this.fechas["1995-01-01 00:00:00"];
+            return this.fechas["1995-01-01"];
         }
         else if(fecha in this.fechas)
         {
@@ -92,6 +92,28 @@ function Capa(idCapa, nombreCapa)
         {
             return null;
         }
+    }
+
+    this.getRango = function(fechaInicial, fechaFinal)
+    {
+        var datos = [];
+        var rango = [];
+        for(var x in this.fechas)
+        {
+            if(x >= fechaInicial && x <= fechaFinal)
+            {
+                rango.push(x);
+            }
+        }
+        rango.sort();
+
+        for(var ran in rango)
+        {
+            console.log(rango[ran]);
+            datos.push(this.fechas[rango[ran]]);
+        }
+
+        return datos;
     }
 }
 
