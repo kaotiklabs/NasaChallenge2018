@@ -1,6 +1,7 @@
 
 var textEarth, textClouds, textStars;
 var dataTextures = [];
+
 var csvFile;
 var gui;
 var csvWorldAirTempreature;
@@ -22,8 +23,6 @@ var Heatmap = true;
 var Background = true;
 var Markers = false;
 
-var vid;
-
 function preload() {
 
 	textEarth = loadImage("assets/earth.jpg");
@@ -42,11 +41,6 @@ function setup() {
 
 	gui = createGui('NASA Apps Challenge 2018');
 	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background');
-
-	vid = createVideo(["assets/street.avi"]);
-	vid.elt.muted = true;
-	vid.loop();
-	//vid.hide();
 
 	//enable wegl alpha??
 	// gl = this._renderer.GL;
@@ -67,60 +61,13 @@ function setup() {
 	console.log(datos[3]);
 	console.log(datos[4]);
 	var rango = capa.getRango("1995-01-01","1997-01-01");
-	GenerateTextureArray(rango);
+	dataTextures = GenerateTextureArray(rango);
 
 	//dataTexture.fill(0, 0, 0, 0);
 	//dataTexture.background(0, 220, 0, 0);
 
-	//parseCSVData();
 	//parseDataTexture(0);
 }
-
-// function parseCSVData() {
-
-// 	//Make a P5 table to store data
-// 	eqdata = new p5.Table();
-// 	eqdata.addColumn('cX'); //0
-// 	eqdata.addColumn('cY'); //1
-// 	eqdata.addColumn('cZ'); //2
-// 	eqdata.addColumn('mag'); //3
-// 	eqdata.addColumn('raxis'); //4
-// 	eqdata.addColumn('xaxis'); //5
-// 	eqdata.addColumn('angleb'); //6
-
-// 	//Extract data from CSV, calculate and store in the table
-// 	for (var i = 0; i < csvFile.length; i++) { 
-// 		var data = [i].split(/,/);
-// 		//console.log(data);
-// 		var lat = data[1];
-// 		var lon = data[2];
-// 		var mag = data[4];
-		
-// 		let thetha = PI / 2 + radians(lat);
-// 		let phi = PI / 2 - radians(lon);
-// 		let cX = -(radius * sin(thetha) * cos(phi));
-// 		let cZ = -(radius * sin(phi) * sin(thetha));
-// 		let cY = (radius * cos(thetha));
-// 		let posvector = createVector(cX, cY, cZ);
-// 		let xaxis = createVector(1, 0, 0);
-// 		let raxis = xaxis.cross(posvector);
-// 		let angleb = xaxis.angleBetween(posvector);
-// 		mag = pow(10, mag);
-// 		mag = sqrt(mag);
-// 		var magmax = sqrt(pow(10, 10));
-// 		var d = map(mag, 0, magmax, 0, 180);
-// 		rows[i] = eqdata.addRow();
-// 		rows[i].set('cX', cX);
-// 		rows[i].set('cY', cY);
-// 		rows[i].set('cZ', cZ);
-// 		rows[i].set('mag', d);
-// 		rows[i].set('raxis', raxis);
-// 		rows[i].set('xaxis', xaxis);
-// 		rows[i].set('angleb', angleb);
-// 		//print("load line: "+i);
-		
-// 	}
-// }
 
 function GenerateTextureArray(fechas)
 {
@@ -129,7 +76,7 @@ function GenerateTextureArray(fechas)
 
 	for(var fecha in fechas)
 	{
-		texture = DateToTexture(fecha.getDatos());
+		texture = DateToTexture(fechas[fecha].getDatos());
 		textures.push(texture);
 	}
 
@@ -142,17 +89,19 @@ function DateToTexture(arrayDatos){
 	var bufTexture = createGraphics(1536, 768);
 
 	for (var i = 0; i < arrayDatos.length; i++) { 
-
+		
 		//var data = [i].split(/,/);
 		//console.log(data);
 
 		var lat = arrayDatos[i].latitud;
 		var lon = arrayDatos[i].longitud;
 		var mag = arrayDatos[i].valor;
+
+		print("lat: "+lat+" lon: "+lon+" val: "+mag);
 		
 		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
 		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
-		var magnitude = map(mag, 0, 7, 0, 255, true);
+		var magnitude = map(mag, 0, 50, 0, 255, true);
 
 		//paint data texture		
 		bufTexture.colorMode(HSB, 255, 100, 100, 255);
@@ -231,7 +180,7 @@ function draw() {
 	if(Heatmap){
 		//data ellipse
 		//dataTexture.fill(0,0,0,0);
-		texture(dataTextures[0]);
+		texture(dataTextures[10]);
 		sphere(radius + 10);
 	}
 
