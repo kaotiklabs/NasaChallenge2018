@@ -37,7 +37,8 @@ function preload() {
 
 	csvFile = loadStrings("data/all.csv");
 
-	csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
+	//csvWorldAirTempreature = loadStrings("data/worldAirTemperature.csv");
+	csvWorldAirTempreature = loadStrings("data/surfaceTemperature.csv");
 }
 
 function setup() {
@@ -59,9 +60,9 @@ function setup() {
 	var capas = new Capas();
 	capas.cargarCapa(1, 'World Air Temperature',csvWorldAirTempreature);
 	var capa = capas.getCapa(1);
-	var fecha = capa.getFecha(null);
-	var datos = fecha.getDatos();
-	var rango = capa.getRango("1995-01-01","1997-01-01");
+	//var fecha = capa.getFecha(null);
+	//var datos = fecha.getDatos();
+	var rango = capa.getRango("2017-01-01","2019-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
 	//dataTexture.fill(0, 0, 0, 0);
@@ -94,22 +95,22 @@ function DateToTexture(arrayDatos){
 		//var data = [i].split(/,/);
 		//console.log(data);
 
-		var lat = arrayDatos[i].latitud;
-		var lon = arrayDatos[i].longitud;
-		var mag = arrayDatos[i].valor;
+		var lat = float(arrayDatos[i].latitud);
+		var lon = float(arrayDatos[i].longitud);
+		var mag = float(arrayDatos[i].valor);
 
-		print("lat: "+lat+" lon: "+lon+" val: "+mag);
+		//print("lat: "+lat+" lon: "+lon+" val: "+mag);
 		
 		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
 		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
-		var magnitude = map(mag, 0, 50, 0, 255, true);
+		var magnitude = map(mag, -100, 100, 0, 255, true);
 
 		//paint data texture		
 		bufTexture.colorMode(HSB, 255, 100, 100, 255);
 
 		bufTexture.noStroke();
 		bufTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		bufTexture.ellipse(textureX, textureY, int(mag*2));
+		bufTexture.ellipse(textureX, textureY, int(magnitude/4));
 
 		//colorMode(RGB);  
 	}

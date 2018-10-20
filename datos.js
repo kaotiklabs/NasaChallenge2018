@@ -17,17 +17,17 @@ function Capas()
             var data = csvFichero[i].split(/,/);
             if(i==0)
             {
-                fechaPointer = 4;
-                altitudPointer = 6;
-                longitudPointer = 7;
-                valorPointer = 5;
-                alturaPointer = 8;
+                fechaPointer = 5;
+                latitudPointer = 2;
+                longitudPointer = 3;
+                valorPointer = 9;
+                alturaPointer = 4;
             }
             else
             {
                 if(data.length>=alturaPointer)
                 {
-                    capa.addDato(data[fechaPointer].substring(0,10), data[altitudPointer], data[longitudPointer], data[valorPointer], data[alturaPointer]);
+                    capa.addDato(data[fechaPointer].substring(0,10), data[latitudPointer], data[longitudPointer], data[valorPointer], data[alturaPointer]);
                 }
             }
         }
@@ -109,7 +109,7 @@ function Capa(idCapa, nombreCapa)
 
         for(var ran in rango)
         {
-            console.log(rango[ran]);
+            //console.log(rango[ran]);
             datos.push(this.fechas[rango[ran]]);
         }
 
