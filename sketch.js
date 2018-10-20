@@ -2,10 +2,10 @@
 var textEarth, textClouds, textStars;
 var dataTexture;
 var csvFile;
+var gui;
 var csvWorldAirTempreature;
 
-
-var radius = 250;
+var radius = 200;
 var theta = 0;
 var zoomZ = 0;
 
@@ -16,6 +16,11 @@ var ry = 0;
 
 var textCanvas;
 var myFont;
+
+var Clouds = false;
+var Heatmap = true;
+var Background = true;
+var Markers = false;
 
 function preload() {
 
@@ -33,6 +38,8 @@ function preload() {
 function setup() {
 	createCanvas(windowWidth, windowHeight, WEBGL);
 
+	gui = createGui('NASA Apps Challenge 2018');
+	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background');
 
 	//enable wegl alpha??
 	// gl = this._renderer.GL;
@@ -183,27 +190,36 @@ function draw() {
 	rotateX(ry);
 
 	//!no se si fa algo?
-	ambientMaterial(250);
+	//ambientMaterial(250);
 
 	//earth ellipse
 	texture(textEarth);
 	sphere(radius, 48, 32);
-		
-	//clouds ellipse		
-	//texture(textClouds);
-	//sphere(radius + 10, 48, 32);
 	
-	//data ellipse
-	//dataTexture.fill(0,0,0,0);
-	texture(dataTexture);
-	sphere(radius + 10);
+	if(Clouds){
+		//clouds ellipse		
+		texture(textClouds);
+		sphere(radius + 5, 48, 32);	
+	}
+	
 
-	//starfield ellipse
-	//textStars.fill(0, 0, 0, 0);
-	//texture(textStars);	
-	//sphere(radius*5, 48, 32);
-	
-	//draw3DMarkers();
+	if(Heatmap){
+		//data ellipse
+		//dataTexture.fill(0,0,0,0);
+		texture(dataTexture);
+		sphere(radius + 10);
+	}
+
+	if(Background){
+		//starfield ellipse
+		//textStars.fill(0, 0, 0, 0);
+		texture(textStars);	
+		sphere(radius*5, 48, 32);
+	}
+
+	if(Markers){
+		draw3DMarkers();
+	}
 
 	pop();
 
