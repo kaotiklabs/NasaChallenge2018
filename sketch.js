@@ -1,6 +1,6 @@
 
 var textEarth, textClouds, textStars;
-var dataTexture;
+var dataTextures = [];
 var csvFile;
 var gui;
 var csvWorldAirTempreature;
@@ -14,13 +14,15 @@ var rows = [];
 var rx = 0;
 var ry = 0;
 
-var textCanvas;
+//var textCanvas;
 var myFont;
 
 var Clouds = false;
 var Heatmap = true;
 var Background = true;
 var Markers = false;
+
+var vid;
 
 function preload() {
 
@@ -41,6 +43,11 @@ function setup() {
 	gui = createGui('NASA Apps Challenge 2018');
 	gui.addGlobals('Clouds', 'Heatmap', 'Markers', 'Background');
 
+	vid = createVideo(["assets/street.avi"]);
+	vid.elt.muted = true;
+	vid.loop();
+	//vid.hide();
+
 	//enable wegl alpha??
 	// gl = this._renderer.GL;
 	// gl.enable(gl.BLEND);
@@ -55,101 +62,104 @@ function setup() {
 	var fecha = capa.getFecha(null);
 	var datos = fecha.getDatos();
 	var rango = capa.getRango("1995-01-01","1997-01-01");
-	parseCSVData();
-	dataTexture = createGraphics(1536, 768);
+	GenerateTextureArray(rango);
+
 	//dataTexture.fill(0, 0, 0, 0);
 	//dataTexture.background(0, 220, 0, 0);
 
 	//parseCSVData();
-
-	parseDataTexture();
+	//parseDataTexture(0);
 }
 
-/*
-function parseCSVData() {
+// function parseCSVData() {
 
-	//Make a P5 table to store data
-	eqdata = new p5.Table();
-	eqdata.addColumn('cX'); //0
-	eqdata.addColumn('cY'); //1
-	eqdata.addColumn('cZ'); //2
-	eqdata.addColumn('mag'); //3
-	eqdata.addColumn('raxis'); //4
-	eqdata.addColumn('xaxis'); //5
-	eqdata.addColumn('angleb'); //6
+// 	//Make a P5 table to store data
+// 	eqdata = new p5.Table();
+// 	eqdata.addColumn('cX'); //0
+// 	eqdata.addColumn('cY'); //1
+// 	eqdata.addColumn('cZ'); //2
+// 	eqdata.addColumn('mag'); //3
+// 	eqdata.addColumn('raxis'); //4
+// 	eqdata.addColumn('xaxis'); //5
+// 	eqdata.addColumn('angleb'); //6
 
-	//Extract data from CSV, calculate and store in the table
-	for (var i = 0; i < csvFile.length; i++) { 
-		var data = csvFile[i].split(/,/);
-		//console.log(data);
-		var lat = data[1];
-		var lon = data[2];
-		var mag = data[4];
+// 	//Extract data from CSV, calculate and store in the table
+// 	for (var i = 0; i < csvFile.length; i++) { 
+// 		var data = [i].split(/,/);
+// 		//console.log(data);
+// 		var lat = data[1];
+// 		var lon = data[2];
+// 		var mag = data[4];
 		
-		let thetha = PI / 2 + radians(lat);
-		let phi = PI / 2 - radians(lon);
-		let cX = -(radius * sin(thetha) * cos(phi));
-		let cZ = -(radius * sin(phi) * sin(thetha));
-		let cY = (radius * cos(thetha));
-		let posvector = createVector(cX, cY, cZ);
-		let xaxis = createVector(1, 0, 0);
-		let raxis = xaxis.cross(posvector);
-		let angleb = xaxis.angleBetween(posvector);
-		mag = pow(10, mag);
-		mag = sqrt(mag);
-		var magmax = sqrt(pow(10, 10));
-		var d = map(mag, 0, magmax, 0, 180);
-		rows[i] = eqdata.addRow();
-		rows[i].set('cX', cX);
-		rows[i].set('cY', cY);
-		rows[i].set('cZ', cZ);
-		rows[i].set('mag', d);
-		rows[i].set('raxis', raxis);
-		rows[i].set('xaxis', xaxis);
-		rows[i].set('angleb', angleb);
-		//print("load line: "+i);
+// 		let thetha = PI / 2 + radians(lat);
+// 		let phi = PI / 2 - radians(lon);
+// 		let cX = -(radius * sin(thetha) * cos(phi));
+// 		let cZ = -(radius * sin(phi) * sin(thetha));
+// 		let cY = (radius * cos(thetha));
+// 		let posvector = createVector(cX, cY, cZ);
+// 		let xaxis = createVector(1, 0, 0);
+// 		let raxis = xaxis.cross(posvector);
+// 		let angleb = xaxis.angleBetween(posvector);
+// 		mag = pow(10, mag);
+// 		mag = sqrt(mag);
+// 		var magmax = sqrt(pow(10, 10));
+// 		var d = map(mag, 0, magmax, 0, 180);
+// 		rows[i] = eqdata.addRow();
+// 		rows[i].set('cX', cX);
+// 		rows[i].set('cY', cY);
+// 		rows[i].set('cZ', cZ);
+// 		rows[i].set('mag', d);
+// 		rows[i].set('raxis', raxis);
+// 		rows[i].set('xaxis', xaxis);
+// 		rows[i].set('angleb', angleb);
+// 		//print("load line: "+i);
 		
-	}
-}
-*/
-function parseDatesTextures(fechas)
+// 	}
+// }
+
+function GenerateTextureArray(fechas)
 {
 	var textures = [];
 	var texture;
 
 	for(var fecha in fechas)
 	{
-		texture = parseDataTexture(fecha.getDatos());
+		texture = DateToTexture(fecha.getDatos());
 		textures.push(texture);
 	}
 
 	return textures;
 }
 
-function parseDataTexture(){
 
-	for (var i = 0; i < csvFile.length; i++) { 
+function DateToTexture(arrayDatos){
 
-		var data = [i].split(/,/);
+	var bufTexture = createGraphics(1536, 768);
+
+	for (var i = 0; i < arrayDatos.length; i++) { 
+
+		//var data = [i].split(/,/);
 		//console.log(data);
-		var lat = data[1];
-		var lon = data[2];
-		var mag = data[4];
+
+		var lat = arrayDatos[i].latitud;
+		var lon = arrayDatos[i].longitud;
+		var mag = arrayDatos[i].valor;
 		
-		var textureX = map(lon, -180, 180, 0, dataTexture.width, true);
-		var textureY = map(lat, -90, 90, dataTexture.height, 0, true);
+		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
+		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
 		var magnitude = map(mag, 0, 7, 0, 255, true);
 
 		//paint data texture		
-		dataTexture.colorMode(HSB, 255, 100, 100, 255);
+		bufTexture.colorMode(HSB, 255, 100, 100, 255);
 
-		dataTexture.noStroke();
-		dataTexture.fill(magnitude, 70, 70, magnitude/1.3);
-		dataTexture.ellipse(textureX, textureY, int(mag*2));
+		bufTexture.noStroke();
+		bufTexture.fill(magnitude, 70, 70, magnitude/1.3);
+		bufTexture.ellipse(textureX, textureY, int(mag*2));
 
 		//colorMode(RGB);  
 	}
 
+	return bufTexture;
 }
 
 
@@ -207,7 +217,7 @@ function draw() {
 	sphere(radius, 48, 32);
 	
 	if(Clouds){
-		//clouds ellipse		
+		//clouds ellipse			
 		texture(textClouds);
 		sphere(radius + 5, 48, 32);	
 	}
@@ -216,7 +226,7 @@ function draw() {
 	if(Heatmap){
 		//data ellipse
 		//dataTexture.fill(0,0,0,0);
-		texture(dataTexture);
+		texture(dataTextures[0]);
 		sphere(radius + 10);
 	}
 
