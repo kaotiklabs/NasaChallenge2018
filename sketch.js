@@ -28,6 +28,8 @@ var Heatmap = true;
 var Background = true;
 var Markers = false;
 
+var heat; //heatmap
+
 function preload() {
 
 	textEarth = loadImage("assets/earth.jpg");
@@ -44,39 +46,34 @@ function preload() {
 
 function windowResized() {
 	resizeCanvas(windowWidth, windowHeight);
+	heat.resize();
   }
 
   
 function setup() {
-	frameRate(30);
 
 	createCanvas(windowWidth, windowHeight, WEBGL);
+	
+	heat = simpleheat('heatcanvas');
+	var canvas1 = document.getElementById("heatcanvas");   
+	canvas1.style.display="none";
+	//heat.radius(10, 80);
+	heat.radius(10, 20);
+	heat.gradient({0.0: 'pink', 0.2: 'purple', 0.4: 'blue', 0.6: 'green', 0.8: 'yellow', 1: 'red'});
 
 	gui = createGui('NASA Apps Challenge 2018');
 	gui.addGlobals('speedFactor', 'Clouds', 'Heatmap', 'Markers', 'Background', 'timeStep');
 
 	timer = millis();
 
-	//enable wegl alpha??
-	// gl = this._renderer.GL;
-	// gl.enable(gl.BLEND);
-	// gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);	
-
-	//textCanvas = createGraphics(windowWidth,windowHeight);	
 	textFont(myFont);
 
 	var capas = new Capas();
 	capas.cargarCapa(1, 'World Air Temperature',csvWorldAirTempreature);
 	var capa = capas.getCapa(1);
-	//var fecha = capa.getFecha(null);
-	//var datos = fecha.getDatos();
 	var rango = capa.getRango("1990-01-01","2019-01-01");
 	dataTextures = GenerateTextureArray(rango);
 
-	//dataTexture.fill(0, 0, 0, 0);
-	//dataTexture.background(0, 220, 0, 0);
-
-	//parseDataTexture(0);
 }
 
 function GenerateTextureArray(fechas)
@@ -87,7 +84,7 @@ function GenerateTextureArray(fechas)
 	for(var fecha in fechas)
 	{
 		texture = DateToTexture(fechas[fecha].getDatos());
-		textures.push(texture);
+		textures.push(texture);		
 	}
 
 	return textures;
@@ -96,35 +93,32 @@ function GenerateTextureArray(fechas)
 
 function DateToTexture(arrayDatos){
 
-	//var bufTexture = createGraphics(1536, 768);
-	var bufTexture = createGraphics(1024, 512);
+	// reset heatmap data
+	heat.clear();
 
 	for (var i = 0; i < arrayDatos.length; i++) { 
 		
-		//var data = [i].split(/,/);
-		//console.log(data);
-
 		var lat = float(arrayDatos[i].latitud);
 		var lon = float(arrayDatos[i].longitud);
 		var mag = float(arrayDatos[i].valor);
 
-		//print("lat: "+lat+" lon: "+lon+" val: "+mag);
-		
-		var textureX = map(lon, -180, 180, 0, bufTexture.width, true);
-		var textureY = map(lat, -90, 90, bufTexture.height, 0, true);
-		var magnitude = map(mag, -20, 40, 240, 0, true);
+		var textureX = map(lon, -180, 180, 0, 1024, true);
+		var textureY = map(lat, -90, 90, 512, 0, true);
 
-		//paint data texture		
-		bufTexture.colorMode(HSB, 360, 100, 100, 255);
-
-		bufTexture.noStroke();
-		bufTexture.fill(magnitude, 70, 70, 10);
-		bufTexture.ellipse(textureX, textureY, 80);
-
-		//colorMode(RGB);  
+		//add points to heatmap
+		var scale = map(mag, -50, 50, 0, 1, true);
+		heat.add([textureX, textureY, scale]);		
 	}
 
-	return bufTexture;
+	//update heatmap drawing
+	heat.draw();	
+	
+	//get heatmap canvas image and store it as a texture and return it
+	var canvas1 = document.getElementById("heatcanvas");     
+	var url = canvas1.toDataURL("image/png").replace("image/png", "image/octet-stream"); 
+	var heatImage = loadImage(url);
+
+	return heatImage;
 }
 
 
@@ -171,20 +165,14 @@ function draw() {
 	//	fill(255);
 	// ellipse(mouseX - width/2, mouseY - height/2, 20, 20);
 
-	// ambientLight(150);
-	// directionalLight(255, 211, 200, 0.25, 0.25, 0);
-	// pointLight(255, 255, 255, mouseX, mouseY, 250);
-
-
-
+	//  ambientLight(150);
+	//  directionalLight(255, 211, 200, 0.25, 0.25, 0);
+	//  pointLight(255, 255, 255, mouseX, mouseY, 250);
 
 	push();
 	//earth and mouse rotation
 	rotateY(rx +theta * 0.01);
 	rotateX(ry);
-
-	//!no se si fa algo?
-	//ambientMaterial(250);
 
 	//earth ellipse
 	texture(textEarth);
@@ -199,14 +187,12 @@ function draw() {
 
 	if(Heatmap){
 		//data ellipse
-		//dataTexture.fill(0,0,0,0);
 		texture(dataTextures[numFrame]);
 		sphere(radius+7);
 	}
 
 	if(Background){
 		//starfield ellipse
-		//textStars.fill(0, 0, 0, 0);
 		texture(textStars);	
 		sphere(radius*5, 48, 32);
 	}
@@ -219,21 +205,6 @@ function draw() {
 
 	//earth rotation increment
 	theta += speedFactor/100;
-
-	
-	//var gl = document.getElementById('defaultCanvas0').getContext('webgl');
-	//gl.disable(gl.DEPTH_TEST);
-	
-	///fps counter
-
-	//offscreen canvas mode
-	// textCanvas.fill(255);
-	// textCanvas.textAlign(CENTER);
-	// textCanvas.textSize(50);
-	// textCanvas.text(int(frameRate())+" fps", 100, 100);	
-  	// texture(textCanvas);
-  	// plane(width, height);
-
 	
 	//webgl text mode
 	fill(255);
