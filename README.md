@@ -11,4 +11,4 @@ A heatmap is generated for each date and exported as a png texure.
 The heatmap is projected over a 3D model of the Earth and the animation is shown.
 
 All has been done in one long day by a team of two.
-Hoe you enjoy. :)
+Hope you enjoy. :)
