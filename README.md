@@ -13,7 +13,7 @@ A heatmap is generated for each date and exported as a png texure.
 The heatmap is projected over a 3D model of the Earth and the animation is shown.
 
 Watch demo video here:
-https://github.com/kaotiklabs/NasaChallenge2018/blob/master/NASAChallenge2018.mov
+https://github.com/kaotiklabs/NasaChallenge2018/blob/master/NASAChallenge2018.mov?raw=true
 
 All has been done in one long day by a team of two.
 Hope you enjoy. :)
